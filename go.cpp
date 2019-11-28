@@ -18,8 +18,8 @@ This algorithm was developed by Edsger Dijkstra
 
 using namespace std;
 
-int resourceCount;
-int processCount;
+int resourceCount = ;
+int processCount = ;
 
 class Process{
 	int pId;
@@ -102,7 +102,7 @@ class Resource{
 		}
 };
 
-// Display function not working properly
+// Display function is not working properly
 void display(Process P[], Resource R[])
 {
 	cout<<"\n\n\n";
@@ -198,6 +198,13 @@ void bankersAlgorithm(Resource R[], Process P[])
 					{
 						P[i].setfinished(true);
 						currentProcess = P[i];
+						completed++;
+
+						// Once the process is complete, the resources which were being utilized by the
+						// process is freed. Hence, should be counted as available.
+						for(int q=0; q<resourceCount; q++)
+							R[q].setCurrentAvailable() = 
+						R[q].getCurrentAvailable() + P[i].getAllocation(R[q].getResourceId());
 					}
 				}
 				else
