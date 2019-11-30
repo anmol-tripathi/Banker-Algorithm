@@ -105,30 +105,30 @@ class Resource{
 // Display function is not working properly
 void display(Process P[], Resource R[])
 {
-	cout<<"\n\n\n";
-	cout<<"| Processes |";
+	// cout<<"\n\n\n";
+	// cout<<"| Processes |";
 
-	for(int i=0; i<resourceCount/2; i++)
-		cout<<" ";
-	cout<<"Resources Available";
-	for(int i=0; i<resourceCount/2; i++)
-		cout<<" ";
-	cout<<"|";
+	// for(int i=0; i<resourceCount/2; i++)
+	// 	cout<<" ";
+	// cout<<"Resources Available";
+	// for(int i=0; i<resourceCount/2; i++)
+	// 	cout<<" ";
+	// cout<<"|";
 
-	for(int i=0; i<resourceCount/2; i++)
-		cout<<" ";
-	cout<<"Max Resources";
-	for(int i=0; i<resourceCount/2; i++)
-		cout<<" ";
-	cout<<"|";
-	cout<<"\n";
-	cout<<"             ";
-	for(i=0; i<resourceCount; i++)
-	{
-		char val = R[i].getResourceId();
-		cout<<val<<"|";
-	}
-	cout<<"";	
+	// for(int i=0; i<resourceCount/2; i++)
+	// 	cout<<" ";
+	// cout<<"Max Resources";
+	// for(int i=0; i<resourceCount/2; i++)
+	// 	cout<<" ";
+	// cout<<"|";
+	// cout<<"\n";
+	// cout<<"             ";
+	// for(i=0; i<resourceCount; i++)
+	// {
+	// 	char val = R[i].getResourceId();
+	// 	cout<<val<<"|";
+	// }
+	// cout<<"";	
 }
 
 
@@ -164,7 +164,7 @@ int resourceLeft(Resource R, Process P[])
 	return left;
 }
 
-void bankersAlgorithm(Resource R[], Process P[])
+void bankersAlgorithm(Process P[], Resource R[])
 {
 	// First, we will calculate how much resource of each type is left
 	int completed = 0;
@@ -172,7 +172,7 @@ void bankersAlgorithm(Resource R[], Process P[])
 	for(int i=0; i<resourceCount; i++)
 		R[i].setCurrentAvailable(resourceLeft(R[i], P));
 	
-	// To set Resource requiremet of all the processes
+	// To set Resource requirement of all the processes
 	for(int i=0; i<processCount; i++)
 	{
 		for(int j=0; j<resourceCount; j++)
@@ -194,29 +194,104 @@ void bankersAlgorithm(Resource R[], Process P[])
 				if(R[j].getCurrentAvailable()<=P[i].getResourceRequirement(R[j].getResourceId()))
 				{
 					resourceSufficient++;
-					if((resourceSufficient==resourceCount)&&(P[i].getFinished()!=true))
+					if((resourceSufficient==resourceCount)&&(P[i].getFinished()==false))
 					{
 						P[i].setfinished(true);
 						currentProcess = P[i];
 						completed++;
 
 						// Once the process is complete, the resources which were being utilized by the
-						// process is freed. Hence, should be counted as available.
+						// process are released. Hence, should be counted as available.
 						for(int q=0; q<resourceCount; q++)
 							R[q].setCurrentAvailable() = 
 						R[q].getCurrentAvailable() + P[i].getAllocation(R[q].getResourceId());
 					}
 				}
 				else
-					break;
+					continue;
 			}
 			cout<<"currentProcess = "<<currentProcess.getPId()<<"\n";
 		}
 	}
 }
 
+
+void enterData(Process P, Resource R)
+{
+	int x;
+	char a;
+	cout<<"\n Resource data: \n\n";
+	for(int i=0; i<resourceCount; i++)
+	{
+		cout<<"\n\t Resource "<<i+1;
+		cout<<"\nEnter the resource id: ";
+		cin>>a;
+		R[i].setResourceId(x);
+		cout<<"\nEnter total resource available: ";
+		cin>>x;
+		R[i].setMaxAvailable(x);
+	}
+
+	cout<<"\n Process data: \n\n";
+	for(int i=0; i<processCount; i++)
+	{
+		cout<<"\n\t Process "<<i+1;
+		cout<<"\nEnter the process id: ";
+		cin>>x;
+		P[i].setPId(x);
+		for(int j=0; j<resourceCount; j++)
+		{
+			cout<<"\n\n Resource "<<getResourceId(R[j]);
+			cout<<"\n Enter maximum requirement: ";
+			cin>>x;
+			P[i].setMaxRequirement(R[j].getResourceId(),x);
+			cout<<"\n Enter resource allocated: ";
+			cin>>x;
+			P[i].setAllocation(R[j].getResourceId(),x);
+		}
+	}
+}
+
 int main()
 {
-	Process P[processCount];
-	Resources R[resourceCount];
-}
+	int choice;
+	while(true){
+		cout<<"\n\n\t\t ``Banker's Algorithm``\n";
+		cout<<"\n\n Manually enter the data or go for computer genereated data?";
+		cout<<"\n 1. Feed the data\t 2. Auto generated\t 0. Exit";
+		cout<<"\n Enter the choice [0-2]: ";
+		cin>>choice;
+		switch(choice)
+		{
+			case 1: {
+				cout<<"\n Number of Processes: ";
+				cin>>processCount;
+				cout<<"\n Number of Resources: ";
+				cin>>resourceCount;
+				Process P[processCount];
+				Resources R[resourceCount];
+				// enterData(P,R);
+				bankersAlgorithm(P,R);
+				break;
+			}
+
+			case 2: {
+				cout<<"\n Number of Processes: ";
+				cin>>processCount;
+				cout<<"\n Number of Resources: ";
+				cin>>resourceCount;
+				Process P[processCount];
+				Resources R[resourceCount];
+				generateRandomData(P,R);
+				bankersAlgorithm(P,R);
+				break;
+			}
+
+			case 3: {
+				cout<<"\n Thanks!";
+				exit(1);
+			}
+	
+		}
+	}
+}	
