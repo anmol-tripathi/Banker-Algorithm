@@ -18,8 +18,8 @@ This algorithm was developed by Edsger Dijkstra
 
 using namespace std;
 
-int resourceCount = ;
-int processCount = ;
+int resourceCount;
+int processCount;
 
 class Process{
 	int pId;
@@ -48,7 +48,7 @@ class Process{
 		{
 			return allocation[res];
 		}
-		
+
 		void setPId(int pId)
 		{
 			this->pId = pId;
@@ -102,12 +102,38 @@ class Resource{
 		}
 };
 
-// Display function is not working properly
 void display(Process P[], Resource R[])
 {
-	// cout<<"\n\n\n";
-	// cout<<"| Processes |";
 
+	cout<<"\n\n\t Table for Resources Allocated";
+	cout<<"\n\n";
+	cout<<"| Processes |";
+	for(int i=0; i<resourceCount; i++)
+		cout<<"  "<<R[i].getResourceId();
+
+	for(int i=0; i<processCount; i++)
+	{
+		cout<<"      "<<P[i].getPId()<<"      ";
+		for(int j=0; j<resourceCount; j++)
+		{
+			cout<<"  "<<P[i].getAllocation(R[j].getResourceId());
+		}
+	}
+
+	cout<<"\n\n\t Table for Maximum Resource Requirement";
+	cout<<"\n\n";
+	cout<<"| Processes |";
+	for(int i=0; i<resourceCount; i++)
+		cout<<"  "<<R[i].getResourceId();
+
+	for(int i=0; i<processCount; i++)
+	{
+		cout<<"      "<<P[i].getPId()<<"      ";
+		for(int j=0; j<resourceCount; j++)
+		{
+			cout<<"  "<<P[i].getMaxRequirement(R[j].getResourceId());
+		}
+	}
 	// for(int i=0; i<resourceCount/2; i++)
 	// 	cout<<" ";
 	// cout<<"Resources Available";
@@ -128,7 +154,7 @@ void display(Process P[], Resource R[])
 	// 	char val = R[i].getResourceId();
 	// 	cout<<val<<"|";
 	// }
-	// cout<<"";	
+	// cout<<"";
 }
 
 
@@ -138,7 +164,7 @@ void generateRandomData(Process P[], Resource R[])
 	char res = 'A';
 	for(int i=0; i<resourceCount; i++)
 	{
-		R[i].setPId(res);
+		R[i].setResourceId(res);
 		R[i].setMaxAvailable(rand()%100);
 	}
 	//random_number = rand()%(max-min +1) + min;
@@ -147,20 +173,19 @@ void generateRandomData(Process P[], Resource R[])
 		P[i].setPId(res+i);
 		for(int j=0; j<resourceCount; j++)
 		{
-			P[i].setMaxRequirement(R[j].getResourceId(i),
-				rand()%(( R[j].getMaxAvailable(R[j].getResourceId()) +1) )); //To set Max Requirement
-			P[i].allocation(R[j].getResourceId(),
+			P[i].setMaxRequirement(R[j].getResourceId(),
+				rand()%(( R[j].getMaxAvailable() +1) )); //To set Max Requirement
+			P[i].setAllocation(R[j].getResourceId(),
 			 rand()%(( P[i].getMaxRequirement(R[j].getResourceId()) +1) ));	//To set allocation
 		}
 	}
-	return 0;
 }
 
 int resourceLeft(Resource R, Process P[])
 {
-	int left = R.getMaxAvailable;
+	int left = R.getMaxAvailable();
 	for(int i=0; i<resourceCount; i++)
-		left-= P[i].getAllocation(R.getResourceId);
+		left-= P[i].getAllocation(R.getResourceId());
 	return left;
 }
 
@@ -171,14 +196,14 @@ void bankersAlgorithm(Process P[], Resource R[])
 	Process currentProcess;
 	for(int i=0; i<resourceCount; i++)
 		R[i].setCurrentAvailable(resourceLeft(R[i], P));
-	
+
 	// To set Resource requirement of all the processes
 	for(int i=0; i<processCount; i++)
 	{
 		for(int j=0; j<resourceCount; j++)
 		{
 			// Set resource requirement for a process
-			P[i].setResourceRequirement(R[j].getResourceId(), 
+			P[i].setResourceRequirement(R[j].getResourceId(),
 				P[i].getMaxRequirement(R[j].getResourceId()) - P[i].getAllocation(R[j].getResourceId()));
 		}
 	}
@@ -203,8 +228,7 @@ void bankersAlgorithm(Process P[], Resource R[])
 						// Once the process is complete, the resources which were being utilized by the
 						// process are released. Hence, should be counted as available.
 						for(int q=0; q<resourceCount; q++)
-							R[q].setCurrentAvailable() = 
-						R[q].getCurrentAvailable() + P[i].getAllocation(R[q].getResourceId());
+							R[q].setCurrentAvailable(R[q].getCurrentAvailable() + P[i].getAllocation(R[q].getResourceId()));
 					}
 				}
 				else
@@ -216,7 +240,7 @@ void bankersAlgorithm(Process P[], Resource R[])
 }
 
 
-void enterData(Process P, Resource R)
+void enterData(Process P[], Resource R[])
 {
 	int x;
 	char a;
@@ -241,7 +265,7 @@ void enterData(Process P, Resource R)
 		P[i].setPId(x);
 		for(int j=0; j<resourceCount; j++)
 		{
-			cout<<"\n\n Resource "<<getResourceId(R[j]);
+			cout<<"\n\n Resource "<<R[j].getResourceId();
 			cout<<"\n Enter maximum requirement: ";
 			cin>>x;
 			P[i].setMaxRequirement(R[j].getResourceId(),x);
@@ -269,7 +293,7 @@ int main()
 				cout<<"\n Number of Resources: ";
 				cin>>resourceCount;
 				Process P[processCount];
-				Resources R[resourceCount];
+				Resource R[resourceCount];
 				// enterData(P,R);
 				bankersAlgorithm(P,R);
 				break;
@@ -281,17 +305,18 @@ int main()
 				cout<<"\n Number of Resources: ";
 				cin>>resourceCount;
 				Process P[processCount];
-				Resources R[resourceCount];
+				Resource R[resourceCount];
 				generateRandomData(P,R);
-				bankersAlgorithm(P,R);
+				display(P,R);
+				//bankersAlgorithm(P,R);
 				break;
 			}
 
-			case 3: {
+			case 0: {
 				cout<<"\n Thanks!";
 				exit(1);
 			}
-	
+
 		}
 	}
-}	
+}
