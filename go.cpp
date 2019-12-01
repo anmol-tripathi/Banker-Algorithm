@@ -110,6 +110,7 @@ void display(Process P[], Resource R[])
 	cout<<"| Processes |";
 	for(int i=0; i<resourceCount; i++)
 		cout<<"  "<<R[i].getResourceId();
+	cout<<"\n";
 
 	for(int i=0; i<processCount; i++)
 	{
@@ -118,6 +119,7 @@ void display(Process P[], Resource R[])
 		{
 			cout<<"  "<<P[i].getAllocation(R[j].getResourceId());
 		}
+		cout<<"\n";
 	}
 
 	cout<<"\n\n\t Table for Maximum Resource Requirement";
@@ -125,6 +127,7 @@ void display(Process P[], Resource R[])
 	cout<<"| Processes |";
 	for(int i=0; i<resourceCount; i++)
 		cout<<"  "<<R[i].getResourceId();
+	cout<<"\n";
 
 	for(int i=0; i<processCount; i++)
 	{
@@ -133,6 +136,7 @@ void display(Process P[], Resource R[])
 		{
 			cout<<"  "<<P[i].getMaxRequirement(R[j].getResourceId());
 		}
+		cout<<"\n";
 	}
 	// for(int i=0; i<resourceCount/2; i++)
 	// 	cout<<" ";
@@ -164,13 +168,13 @@ void generateRandomData(Process P[], Resource R[])
 	char res = 'A';
 	for(int i=0; i<resourceCount; i++)
 	{
-		R[i].setResourceId(res);
+		R[i].setResourceId(res+i);
 		R[i].setMaxAvailable(rand()%100);
 	}
 	//random_number = rand()%(max-min +1) + min;
 	for(int i=0; i<processCount; i++)
 	{
-		P[i].setPId(res+i);
+		P[i].setPId(i+1);
 		for(int j=0; j<resourceCount; j++)
 		{
 			P[i].setMaxRequirement(R[j].getResourceId(),
@@ -250,7 +254,7 @@ void enterData(Process P[], Resource R[])
 		cout<<"\n\t Resource "<<i+1;
 		cout<<"\nEnter the resource id: ";
 		cin>>a;
-		R[i].setResourceId(x);
+		R[i].setResourceId(a);
 		cout<<"\nEnter total resource available: ";
 		cin>>x;
 		R[i].setMaxAvailable(x);
@@ -283,7 +287,7 @@ int main()
 		cout<<"\n\n\t\t ``Banker's Algorithm``\n";
 		cout<<"\n\n Manually enter the data or go for computer genereated data?";
 		cout<<"\n 1. Feed the data\t 2. Auto generated\t 0. Exit";
-		cout<<"\n Enter the choice [0-2]: ";
+		cout<<"\n\n Enter the choice [0-2]: ";
 		cin>>choice;
 		switch(choice)
 		{
@@ -294,8 +298,9 @@ int main()
 				cin>>resourceCount;
 				Process P[processCount];
 				Resource R[resourceCount];
-				// enterData(P,R);
-				bankersAlgorithm(P,R);
+				enterData(P,R);
+				//bankersAlgorithm(P,R);
+				display(P,R);
 				break;
 			}
 
