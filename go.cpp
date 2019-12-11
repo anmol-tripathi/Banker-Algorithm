@@ -105,80 +105,73 @@ class Resource{
 void display(Process P[], Resource R[])
 {
 
-	cout<<"\n\n\t Table for Resources Allocated";
+	cout<<"\n\n\t Maximum Resources Available: \n";
+	for (int i = 0; i < resourceCount; ++i)
+	{
+		cout<<"Resource "<<R[i].getResourceId()<<": "<<R[i].getMaxAvailable()<<"\n";
+	}
+	cout<<"\n\n\t  Resources Allocated";
 	cout<<"\n\n";
-	cout<<"| Processes |";
+	cout<<"Process ID    \t";
 	for(int i=0; i<resourceCount; i++)
-		cout<<"  "<<R[i].getResourceId();
-	cout<<"\n";
+		cout<<R[i].getResourceId()<<"\t";
+	cout<<"\n\n";
 
 	for(int i=0; i<processCount; i++)
 	{
 		cout<<"      "<<P[i].getPId()<<"      ";
 		for(int j=0; j<resourceCount; j++)
 		{
-			cout<<"  "<<P[i].getAllocation(R[j].getResourceId());
+			cout<<"\t"<<P[i].getAllocation(R[j].getResourceId());
 		}
 		cout<<"\n";
 	}
 
-	cout<<"\n\n\t Table for Maximum Resource Requirement";
+	cout<<"\n\n\t Maximum Resource Requirement";
 	cout<<"\n\n";
-	cout<<"| Processes |";
+	cout<<"Process ID    \t";
 	for(int i=0; i<resourceCount; i++)
-		cout<<"  "<<R[i].getResourceId();
-	cout<<"\n";
+		cout<<R[i].getResourceId()<<"\t";
+	cout<<"\n\n";
 
 	for(int i=0; i<processCount; i++)
 	{
 		cout<<"      "<<P[i].getPId()<<"      ";
 		for(int j=0; j<resourceCount; j++)
 		{
-			cout<<"  "<<P[i].getMaxRequirement(R[j].getResourceId());
+			cout<<"\t"<<P[i].getMaxRequirement(R[j].getResourceId());
 		}
 		cout<<"\n";
 	}
-	// for(int i=0; i<resourceCount/2; i++)
-	// 	cout<<" ";
-	// cout<<"Resources Available";
-	// for(int i=0; i<resourceCount/2; i++)
-	// 	cout<<" ";
-	// cout<<"|";
 
-	// for(int i=0; i<resourceCount/2; i++)
-	// 	cout<<" ";
-	// cout<<"Max Resources";
-	// for(int i=0; i<resourceCount/2; i++)
-	// 	cout<<" ";
-	// cout<<"|";
-	// cout<<"\n";
-	// cout<<"             ";
-	// for(i=0; i<resourceCount; i++)
-	// {
-	// 	char val = R[i].getResourceId();
-	// 	cout<<val<<"|";
-	// }
-	// cout<<"";
 }
 
 
 void generateRandomData(Process P[], Resource R[])
 {
+	// In order to generate random number between range min and max
+	// random_number = rand()%(max-min +1) + min;
+	
 	srand(time(NULL));
 	char res = 'A';
+	int threshold = 26;
+	float allocationPercentage = (rand()%(100-10 +1) + 10)/100;
+
+
 	for(int i=0; i<resourceCount; i++)
 	{
 		R[i].setResourceId(res+i);
-		R[i].setMaxAvailable(rand()%100);
+		R[i].setMaxAvailable(rand()%(100-threshold + 1)+threshold);
+		R[i].setCurrentAvailable(R[i].getMaxAvailable());
 	}
-	//random_number = rand()%(max-min +1) + min;
+	
 	for(int i=0; i<processCount; i++)
 	{
 		P[i].setPId(i+1);
 		for(int j=0; j<resourceCount; j++)
 		{
 			P[i].setMaxRequirement(R[j].getResourceId(),
-				rand()%(( R[j].getMaxAvailable() +1) )); //To set Max Requirement
+				rand()%(( ((R[j].getMaxAvailable())*allocationPercentage-threshold) +1) )); //To set Max Requirement
 			P[i].setAllocation(R[j].getResourceId(),
 			 rand()%(( P[i].getMaxRequirement(R[j].getResourceId()) +1) ));	//To set allocation
 		}
@@ -284,7 +277,7 @@ int main()
 {
 	int choice;
 	while(true){
-		cout<<"\n\n\t\t ``Banker's Algorithm``\n";
+		cout<<"\n\n\t\t ``Banker's Algorithm``\n \t\t ----------------------\n";
 		cout<<"\n\n Manually enter the data or go for computer genereated data?";
 		cout<<"\n 1. Feed the data\t 2. Auto generated\t 0. Exit";
 		cout<<"\n\n Enter the choice [0-2]: ";
